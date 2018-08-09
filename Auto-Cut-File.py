@@ -149,9 +149,9 @@ def originalProcess(path, thumbPath):
             i += 1
 
 
-size = (128, 128) # 生成小图尺寸
+size = (300, 300) # 生成小图尺寸
 
-sourcesFolder = "downloads/sources"
+sourcesFolder = "/Volumes/DataCenter/iPhoneMedia"
 thumbnailFolder = "downloads/thumbnail"
 
 colorStorage = deserialization('color-mapping.pkl')
