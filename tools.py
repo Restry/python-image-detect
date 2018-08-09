@@ -3,8 +3,8 @@ import os
 from PIL import Image
 
 
-def serialization(obj):
-    with open('color-mapping.pkl', 'wb') as f:
+def serialization(obj,file='color-mapping.pkl'):
+    with open(file, 'wb') as f:
         pickle.dump(obj, f)
 
 
