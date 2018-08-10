@@ -10,6 +10,8 @@ downloads/*
 result/*
 files/*
 
+example.*
+
 # Distribution / packaging
 .Python
 build/

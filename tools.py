@@ -2,8 +2,38 @@ import pickle
 import os
 from PIL import Image
 
+import struct
 
-def serialization(obj,file='color-mapping.pkl'):
+# RGB元素范围(0-1)
+
+
+def hex_to_rgb(hex_str):
+    int_tuple = struct.unpack('BBB', bytes.fromhex(hex_str))
+    return tuple([val/255 for val in int_tuple])
+
+# print(hex_to_rgb('7BF5BE'))
+
+
+# RGB元素范围(0-255)
+def hex2rgb(hex_str):
+    int_tuple = struct.unpack('BBB', bytes.fromhex(hex_str))
+    return tuple([val for val in int_tuple])
+
+# print(hex2rgb('7BF5BE'))
+
+
+def rgb_to_hex(rgb):
+    return '#%02x%02x%02x' % rgb
+
+
+def rgb_to_10(rgb):
+    return int('%02x%02x%02x' % rgb, 16)
+
+# rgb = (123, 23, 34)
+# print(rgb_to_hex(rgb))
+
+
+def serialization(obj, file='color-mapping.pkl'):
     with open(file, 'wb') as f:
         pickle.dump(obj, f)
 
