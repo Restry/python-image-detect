@@ -32,6 +32,17 @@ def rgb_to_10(rgb):
 # rgb = (123, 23, 34)
 # print(rgb_to_hex(rgb))
 
+def get_dominant_color(image):
+    # 颜色模式转换，以便输出rgb颜色值
+    # image = image.convert('RGBA')
+    image = image.resize((10, 10))
+    color = image.getpixel((0, 0))
+    return color
+
+def get_reverse_color(color):
+  tuple2 = (255-color[0],255-color[1],255-color[2])
+  return tuple2
+
 
 def serialization(obj, file='color-mapping.pkl'):
     with open(file, 'wb') as f:
