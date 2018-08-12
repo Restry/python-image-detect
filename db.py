@@ -20,7 +20,10 @@ def createDB():
         if row[0] <= 0:
             # Create table
             c.execute(
-                '''CREATE TABLE images (r INTEGER, g INTEGER, b INTEGER, path text, color INTEGER, width INTEGER, height INTEGER, name text, originPath text)''')
+                '''CREATE TABLE images (r INTEGER, g INTEGER, b INTEGER, path text, 
+                color INTEGER, width INTEGER, height INTEGER, 
+                name text, category text, level INTEGER, originPath text,
+                size text)''')
 
     conn.commit()
 
