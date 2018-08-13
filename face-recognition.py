@@ -99,7 +99,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
                 y.append(class_dir)
 
         print('AllFolder %s ,Current: (%.2f %%)' %
-              (len(allFolders), num/len(allFolders)))
+              (len(allFolders), num/len(allFolders)*100))
 
     # Determine how many neighbors to use for weighting in the KNN classifier
     if n_neighbors is None:
@@ -205,67 +205,105 @@ def show_prediction_labels_on_image(img_path, predictions):
     # Display the resulting image
     return pil_image
 
+# def save_people_image(img):
+
+
+model_save_path = "downloads/train/trained_knn_model.clf"
 
 if __name__ == "__main__":
     # STEP 1: Train the KNN classifier and save it to disk
     # Once the model is trained and saved, you can skip this step next time.
-    if not os.path.exists('trained_knn_model.clf'):
+    if not os.path.exists(model_save_path):
         print("Training KNN classifier...")
         classifier = train(
-            "downloads/train", model_save_path="trained_knn_model.clf", n_neighbors=2)
+            "downloads/train", model_save_path=model_save_path, n_neighbors=2)
         print("Training complete!")
 
-    people = ['徐峥', '沈腾', '肖央', '谭卓', '黄渤', '周冬雨', '王千源', '王太利', '王宝强', '高圆圆']
+    # people = ['徐峥', '沈腾', '肖央', '谭卓', '黄渤', '周冬雨', '王千源', '王太利', '王宝强', '高圆圆']
+    # people = ['可可', '猴包子', '老妈', '马包子']
 
-    # 输出人头
-    source_dir = "downloads/sources"
-    head_dir = "downloads/heads"
-    for name in people:
-        person_head_folder = os.path.join(head_dir, name)
-        if not os.path.exists(person_head_folder):
-            os.mkdir(person_head_folder)
+    # # 输出头部
+    # source_dir = "downloads/sources"
+    # head_dir = "downloads/heads"
+    # for name in people:
+    #     person_head_folder = os.path.join(head_dir, name)
+    #     if not os.path.exists(person_head_folder):
+    #         os.mkdir(person_head_folder)
 
-        all_image_of_current = image_files_in_folder(
-            os.path.join(source_dir, name))
+    #     all_image_of_current = image_files_in_folder(
+    #         os.path.join(source_dir, name))
 
-        max_range = 20 if len(all_image_of_current) > 20 else len(
-            all_image_of_current)
-        range_of_current = range(0, max_range)
+    #     max_range = 20 if len(all_image_of_current) > 20 else len(
+    #         all_image_of_current)
+    #     range_of_current = range(0, max_range)
 
-        for num in range_of_current:
+    #     for num in range_of_current:
 
-            full_file_path = all_image_of_current[num]
-            image_file_folder, image_file_name = os.path.split(full_file_path)
-            file_name, file_ext = os.path.splitext(image_file_name)
-            try:
-                # Load the jpg file into a numpy array
-                image = face_recognition.load_image_file(full_file_path)
+    #         full_file_path = all_image_of_current[num]
+    #         image_file_folder, image_file_name = os.path.split(full_file_path)
+    #         file_name, file_ext = os.path.splitext(image_file_name)
+    #         try:
+    #             # Load the jpg file into a numpy array
+    #             image = face_recognition.load_image_file(full_file_path)
 
-                # Find all the faces in the image using the default HOG-based model.
-                # This method is fairly accurate, but not as accurate as the CNN model and not GPU accelerated.
-                # See also: find_faces_in_picture_cnn.py
-                face_locations = face_recognition.face_locations(image)
+    #             # Find all the faces in the image using the default HOG-based model.
+    #             # This method is fairly accurate, but not as accurate as the CNN model and not GPU accelerated.
+    #             # See also: find_faces_in_picture_cnn.py
+    #             face_locations = face_recognition.face_locations(image)
 
-                print("{} {}%: I found {} face(s) in this photograph.".format(
-                    name, int(num/max_range * 100), len(face_locations)))
+    #             print("{} {}%: I found {} face(s) in this photograph.".format(
+    #                 name, int(num/max_range * 100), len(face_locations)))
 
-                for face_location in face_locations:
+    #             for face_location in face_locations:
 
-                    # Print the location of each face in this image
-                    top, right, bottom, left = face_location
-                    #print("A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format( top, left, bottom, right))
+    #                 # Print the location of each face in this image
+    #                 top, right, bottom, left = face_location
+    #                 #print("A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format( top, left, bottom, right))
 
-                    # You can access the actual face itself like this:
-                    face_image = image[top:bottom, left:right]
-                    pil_image = Image.fromarray(face_image)
-                    # pil_image.show()
-                    pil_image.save(os.path.join(
-                        person_head_folder, '%s-%s%s' % (file_name, str((top, right, bottom, left)), file_ext)))
+    #                 # You can access the actual face itself like this:
+    #                 face_image = image[top:bottom, left:right]
+    #                 pil_image = Image.fromarray(face_image)
+    #                 # pil_image.show()
+    #                 pil_image.save(os.path.join(
+    #                     person_head_folder, '%s-%s%s' % (file_name, str((top, right, bottom, left)), file_ext)))
 
-                pass
-            except Exception as e:
-                print(e)
-                pass
+    #             pass
+    #         except Exception as e:
+    #             print(e)
+    #             pass
+
+    # 人物分类
+
+    all_images_in_folder = image_files_in_folder(os.path.join("downloads/sources", "jpg"))
+    for num in range(len(all_images_in_folder)):
+        full_file_path = all_images_in_folder[num]
+        image_file_folder, image_file = os.path.split(full_file_path)
+
+        print("Looking for faces in {}".format(image_file))
+
+        # Find all people in the image using a trained classifier model
+        # Note: You can pass in either a classifier file name or a classifier model instance
+        predictions = predict(
+            full_file_path, model_path=model_save_path)
+
+        # Print results on the console
+        for name, (top, right, bottom, left) in predictions:
+            print("- Found {} at ({}, {})".format(name, left, top))
+
+        if len(predictions) > 0:
+            # Display results overlaid on an image
+            img = show_prediction_labels_on_image(
+                full_file_path, predictions)
+
+            # img.show()
+            save_path = 'downloads/people/%s' % predictions[0][0]
+            f, image_file_name = os.path.split(full_file_path)
+
+            if not os.path.exists(save_path):
+                os.mkdir(save_path)
+            img.save('%s/%s' % (save_path, image_file_name))
+            print('all images: %s , current: (%.2f %%)' %
+                  (len(all_images_in_folder), num/len(all_images_in_folder)*100))
 
     # STEP 2: Using the trained classifier, make predictions for unknown images
     # for name in people:
@@ -277,7 +315,7 @@ if __name__ == "__main__":
     #         # Find all people in the image using a trained classifier model
     #         # Note: You can pass in either a classifier file name or a classifier model instance
     #         predictions = predict(
-    #             full_file_path, model_path="trained_knn_model.clf")
+    #             full_file_path, model_path=model_save_path)
 
     #         # Print results on the console
     #         for name, (top, right, bottom, left) in predictions:
